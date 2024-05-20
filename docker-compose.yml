@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  projectdb:
+    build: 
+      context: ./Docker-files/db
+    image:  mohamedsharaf92/projectdb
+    container_name: projectdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - projectdbdata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+
+  projectcashe:
+    image: memcached
+    ports:
+      - "11211:11211"
+
+  projectrmq:
+    image: rabbitmq
+    ports:
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  projectapp:
+    build: 
+      context: ./Docker-files/app
+    image: mohamedsharaf92/projectapp
+    container_name: projectapp
+    ports:
+      - "8080:8080"
+    volumes:
+      - projectappdata:/usr/local/tomcat/webapps
+    
+  projectweb:
+    build: 
+      context: ./Docker-files/web
+    image: mohamedsharaf92/projectweb
+    container_name: projectweb
+    ports:
+      - "80:80"
+
+volumes:
+   projectdbdata: {}
+   projectappdata: {}
+  
